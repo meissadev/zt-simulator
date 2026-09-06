@@ -61,7 +61,10 @@ def get_verification_key(issuer: str, kid: str) -> tuple[bytes, str]:
 
 
 def _fetch_jwks(issuer: str) -> dict:
-    url = issuer.rstrip("/") + config.JWKS_PATH
+    # "issuer" est une identité de confiance, PAS une adresse réseau -- on
+    # résout l'URL réelle via un mapping explicite, jamais en dérivant
+    # l'adresse depuis la valeur de "iss" elle-même (cf. config.py).
+    url = config.ISSUER_JWKS_ENDPOINTS[issuer]
     try:
         response = requests.get(url, verify=config.CA_CERT, timeout=config.JWKS_FETCH_TIMEOUT)
         response.raise_for_status()

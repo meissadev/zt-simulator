@@ -28,8 +28,8 @@ SAN="${3:-}"
 DAYS="${CERT_DAYS:-825}"
 
 PKI_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/pki" && pwd)"
-CA_KEY="${PKI_DIR}/intermediate/private/intermediate.key.pem"
-CA_CERT="${PKI_DIR}/intermediate/certs/intermediate.cert.pem"
+CA_KEY="${PKI_DIR}/ca/private/ca.key.pem"
+CA_CERT="${PKI_DIR}/ca/certs/ca.cert.pem"
 
 KEY_OUT="${PKI_DIR}/certs/${COMPONENT_NAME}.key"
 CSR_OUT="${PKI_DIR}/certs/${COMPONENT_NAME}.csr"
@@ -43,7 +43,7 @@ CERT_OUT="${PKI_DIR}/certs/${COMPONENT_NAME}.crt"
 
 # --- Vérifications préalables ---------------------------------------------
 if [[ ! -f "${CA_KEY}" || ! -f "${CA_CERT}" ]]; then
-    echo "Erreur : CA introuvable dans ${PKI_DIR}/intermediate/"
+    echo "Erreur : CA introuvable dans ${PKI_DIR}/ca/"
     exit 1
 fi
 
@@ -73,7 +73,7 @@ openssl x509 -req \
     -CA "${CA_CERT}" \
     -CAkey "${CA_KEY}" \
     -CAcreateserial \
-    -CAserial "${PKI_DIR}/intermediate/intermediate.srl" \
+    -CAserial "${PKI_DIR}/ca/ca.srl" \
     -out "${CERT_OUT}" \
     -days "${DAYS}" \
     "${EXT_ARGS[@]}" \

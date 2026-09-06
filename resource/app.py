@@ -24,7 +24,7 @@ PKI_DIR = os.environ.get("PKI_DIR", os.path.join(BASE_DIR, "..", "pki"))
 
 CERT_FILE = os.environ.get("RESOURCE_CERT", os.path.join(PKI_DIR, "certs", "resource.crt"))
 KEY_FILE = os.environ.get("RESOURCE_KEY", os.path.join(PKI_DIR, "certs", "resource.key"))
-CA_FILE = os.environ.get("CA_CERT", os.path.join(PKI_DIR, "intermediate", "certs", "intermediate.cert.pem"))
+CA_FILE = os.environ.get("CA_CERT", os.path.join(PKI_DIR, "ca", "certs", "ca.cert.pem"))
 
 HOST = os.environ.get("RESOURCE_HOST", "0.0.0.0")
 PORT = int(os.environ.get("RESOURCE_PORT", "8446"))

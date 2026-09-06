@@ -14,7 +14,7 @@ PKI_DIR = os.environ.get("PKI_DIR", os.path.join(BASE_DIR, "..", "pki"))
 # --- TLS (transport du service IdP lui-même) -----------------------------
 IDP_TLS_CERT = os.environ.get("IDP_TLS_CERT", os.path.join(PKI_DIR, "certs", "idp.crt"))
 IDP_TLS_KEY = os.environ.get("IDP_TLS_KEY", os.path.join(PKI_DIR, "certs", "idp.key"))
-CA_CERT = os.environ.get("CA_CERT", os.path.join(PKI_DIR, "ca", "ca.crt"))
+CA_CERT = os.environ.get("CA_CERT", os.path.join(PKI_DIR, "ca", "certs", "ca.cert.pem"))
 
 HOST = os.environ.get("IDP_HOST", "0.0.0.0")
 PORT = int(os.environ.get("IDP_PORT", "8444"))
