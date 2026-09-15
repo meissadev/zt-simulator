@@ -29,6 +29,9 @@ import pdp_client
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [pep] %(message)s")
 logger = logging.getLogger(__name__)
 
+# Session réutilisée globale pour les appels à la Ressource (HTTP client)
+_resource_session = requests.Session()
+
 app = Flask(__name__)
 
 
@@ -80,28 +83,31 @@ def authenticate_request() -> dict:
         issuer = decoded.payload.get("iss")
         kid = decoded.header.get("kid")
         alg = decoded.header.get("alg")
+        
+        logger.debug("JWT decoded: issuer=%s, kid=%s, alg=%s", issuer, kid, alg)
 
         # Algorithme fixé côté PEP (pas déduit aveuglément du header) --
         # évite une attaque par confusion d'algorithme.
         if alg != config.EXPECTED_JWT_ALG:
-            raise AuthenticationError(f"Algorithme non autorisé : {alg!r}")
+            raise AuthenticationError(f"Algorithme non autorisé : {alg!r} (attendu {config.EXPECTED_JWT_ALG!r})")
 
         # Vérification de l'issuer AVANT tout appel réseau (mitigation SSRF).
         if issuer not in config.TRUSTED_ISSUERS:
-            raise AuthenticationError(f"Issuer non approuvé : {issuer!r}")
+            raise AuthenticationError(f"Issuer non approuvé : {issuer!r} (trusted: {config.TRUSTED_ISSUERS})")
 
         try:
             public_key, jwks_alg = jwks_client.get_verification_key(issuer, kid)
+            logger.debug("JWKS key found: jwks_alg=%s, pub key size=%d bytes", jwks_alg, len(public_key))
         except (jwks_client.UntrustedIssuerError, jwks_client.JWKSFetchError) as exc:
             raise AuthenticationError(str(exc)) from exc
 
         if jwks_alg != alg:
-            raise AuthenticationError("Incohérence d'algorithme entre le token et le JWKS")
+            raise AuthenticationError(f"Incohérence d'algorithme entre le token ({alg!r}) et le JWKS ({jwks_alg!r})")
 
         try:
             claims = jwt_signer.verify_jwt(token, public_key, alg)
         except ValueError as exc:
-            raise AuthenticationError(str(exc)) from exc
+            raise AuthenticationError(f"Signature invalide ou token expiré: {exc}") from exc
 
         logger.info("Authentification JWT réussie (sub=%s)", claims.get("sub"))
         return {"auth_method": "jwt", **claims}
@@ -140,7 +146,7 @@ def proxy(subpath):
     forwarded_headers = {k: v for k, v in request.headers if k.lower() not in ("host", "content-length")}
 
     try:
-        upstream = requests.request(
+        upstream = _resource_session.request(
             method=request.method,
             url=target_url,
             headers=forwarded_headers,

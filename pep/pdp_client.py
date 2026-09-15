@@ -6,9 +6,20 @@ Le PEP ne réévalue jamais de politique lui-même : il transmet le contexte
 conformément à la séparation PEP/PDP de NIST SP 800-207.
 """
 
+import logging
+
 import requests
 
 import config
+
+logger = logging.getLogger(__name__)
+
+# Session réutilisée globale pour les appels au PDP
+_pdp_session = requests.Session()
+
+# Configure TCP_NODELAY pour éviter les délais de Nagle
+_pdp_session.mount('http://', requests.adapters.HTTPAdapter())
+_pdp_session.mount('https://', requests.adapters.HTTPAdapter())
 
 
 class PDPError(Exception):
@@ -32,7 +43,7 @@ def evaluate(subject: dict, resource_path: str, method: str) -> bool:
         }
     }
     try:
-        response = requests.post(config.OPA_URL, json=payload, timeout=config.OPA_TIMEOUT_SECONDS)
+        response = _pdp_session.post(config.OPA_URL, json=payload, timeout=config.OPA_TIMEOUT_SECONDS)
         response.raise_for_status()
     except requests.RequestException as exc:
         raise PDPError(f"Échec d'appel au PDP : {exc}") from exc

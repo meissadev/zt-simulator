@@ -15,6 +15,7 @@ import logging
 from flask import Flask, jsonify, request
 from werkzeug.serving import WSGIRequestHandler, run_simple
 
+
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [ressource] %(message)s")
 logger = logging.getLogger(__name__)
 
@@ -22,8 +23,8 @@ logger = logging.getLogger(__name__)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 PKI_DIR = os.environ.get("PKI_DIR", os.path.join(BASE_DIR, "..", "pki"))
 
-CERT_FILE = os.environ.get("RESOURCE_CERT", os.path.join(PKI_DIR, "certs", "resource.crt"))
-KEY_FILE = os.environ.get("RESOURCE_KEY", os.path.join(PKI_DIR, "certs", "resource.key"))
+CERT_FILE = os.environ.get("RESOURCE_CERT", os.path.join(PKI_DIR, "certs", "ressource.crt"))
+KEY_FILE = os.environ.get("RESOURCE_KEY", os.path.join(PKI_DIR, "certs", "ressource.key"))
 CA_FILE = os.environ.get("CA_CERT", os.path.join(PKI_DIR, "ca", "certs", "ca.cert.pem"))
 
 HOST = os.environ.get("RESOURCE_HOST", "0.0.0.0")
