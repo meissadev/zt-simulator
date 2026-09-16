@@ -344,8 +344,9 @@ dependent de la charge de la machine au moment de la mesure.
 | `--password`     | demo123                    | mot de passe                                  |
 | `--timeout`      | 10.0                       | timeout HTTP en secondes                      |
 
-Note : `metrics/` est exclu du depot git (`gitignore`) ; pour versionner un
-script de mesure : `git add -f metrics/bench_auth.py`.
+Note : le **code** des benchmarks (`metrics/*.py`, `metrics/run_*/start_services.sh`)
+est versionne ; seuls les **resultats** (`metrics/**/*.json`, `*.txt`, `logs/`)
+sont exclus par `.gitignore`.
 
 ## Ports
 
@@ -389,7 +390,7 @@ zt-simulator/
     opa_config.yaml
   ressource/
     app.py, openssl_pqc.cnf, requirements.txt
-  metrics/                    # exclu du depot git
+  metrics/                    # code versionne ; resultats ignores (.gitignore)
     bench_sizes.py            # tailles crypto User -> Service
     bench_auth.py             # temps d'authentification
     bench_access.py           # latence d'acces bout-en-bout

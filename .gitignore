@@ -18,4 +18,8 @@ pki-pqc/ca/crlnumber*
 opa
 pki-old-rsa4096/
 pki-pqc-old/
-metrics/
+
+# Metriques : versionner le code des benchmarks, ignorer les resultats
+metrics/**/logs/
+metrics/**/*.json
+metrics/**/*.txt
