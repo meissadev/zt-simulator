@@ -65,6 +65,15 @@ Doit confirmer :
 
 ## Generation de la PKI
 
+Les PKI (`pki/`, `pki-pqc/`) ne sont **pas versionnees** : elles sont generees
+sur la machine avec les scripts `pki/scripts/` et ignorees par `.gitignore`
+(`pki/ca/`, `pki/certs/` et equivalents). Les commandes ci-dessous sont la
+seule source de verite pour les creer.
+
+> `generate_ca.sh` ecrase une CA existante apres confirmation : ne le relancez
+> pas sur une PKI en service (les services rechargent les certificats au
+> demarrage).
+
 ### PKI classique (RSA-3072)
 
 ```bash

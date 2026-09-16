@@ -2,22 +2,21 @@ venv/
 .venv/
 __pycache__/
 *.py[cod]
+
+# Secrets / materiel cryptographique
 *.pem
 *.key
 *.crt
 *.csr
 *.srl
-pki/ca/private/
-pki-pqc/ca/private/
-pki/ca/index.txt*
-pki/ca/serial*
-pki/ca/crlnumber*
-pki-pqc/ca/index.txt*
-pki-pqc/ca/serial*
-pki-pqc/ca/crlnumber*
+
+# PKI : generees par pki/scripts/ (voir README), jamais versionnees
+pki/ca/
+pki/certs/
+pki-pqc/ca/
+pki-pqc/certs/
+
 opa
-pki-old-rsa4096/
-pki-pqc-old/
 
 # Metriques : versionner le code des benchmarks, ignorer les resultats
 metrics/**/logs/
